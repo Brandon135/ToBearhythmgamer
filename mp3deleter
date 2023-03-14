@@ -1,0 +1,32 @@
+$Directory = "C:\Users\fun67\Desktop\*\*.mp3"
+$Shell = New-Object -ComObject Shell.Application
+Get-ChildItem -Path $Directory -Recurse -Force | ForEach
+    Write-Host $_.DirectoryName
+    $Folder = $Shell.Namespace($_.DirectoryName)
+    $File = $Folder.ParseName($_.Name)
+    $Duration = $Folder.GetDetailsOf($File, 27)
+    if($Duration -gt 00:05:10) { Remove-Item -Path $_.DirectoryName }
+
+    [PSCustomObject]@{
+        Name = $_.Name
+        Duration = $Duration
+    }
+} | Export-Csv -Path "./temp.csv" -NoTypeInformation
+
+
+$Directory = "C:\Users\fun67\Desktop\*\*.mp3"
+$Shell = New-Object -ComObject Shell.Application
+Get-ChildItem -Path $Directory -Recurse -Force | ForEach {
+    Write-Host $_.DirectoryName
+    $Folder = $Shell.Namespace($_.DirectoryName)
+    $File = $Folder.ParseName($_.Name)
+    $Duration = $Folder.GetDetailsOf($File, 27)
+    if($Duration -gt "00:03:10") { 
+     Remove-Item -Path $_.DirectoryName 
+}
+    [PSCustomObject]@{
+        Name = $_.Name
+        Size = "$([int]($_.length / 1mb)) MB"
+        Duration = $Duration
+    }
+}
